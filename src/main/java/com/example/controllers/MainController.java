@@ -69,8 +69,9 @@ public class MainController {
      * Metodo que recibe los datos procedentes de los controles del formulario
      */
     @PostMapping("/altaEstudiante")
-    public void altaEstudiante() {
+    public String altaEstudiante() {
 
+        return "redirect:/listar"; 
     }
 
 }
