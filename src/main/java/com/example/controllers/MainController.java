@@ -1,6 +1,8 @@
 package com.example.controllers;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,17 +11,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.entities.Estudiante;
 import com.example.entities.Facultad;
+import com.example.entities.Telefono;
 import com.example.services.EstudianteService;
 import com.example.services.FacultadService;
+import com.example.services.TelefonoService;
 
 @Controller
 @RequestMapping("/")
 
 public class MainController {
+
+    private static final Logger LOG = Logger.getLogger("MainController");
 
     @Autowired
     private EstudianteService estudianteService;
@@ -27,6 +34,9 @@ public class MainController {
 
     @Autowired
     private FacultadService facultadService;
+
+    @Autowired
+    private TelefonoService telefonoService;
 
     //Un controlador en el patrón mvc de spring responde una request concreta, 
     //y la delega posteriormente en un método que tiene en cuenta el verbo utilizado 
@@ -70,10 +80,42 @@ public class MainController {
      * Metodo que recibe los datos procedentes de los controles del formulario
      */
     @PostMapping("/altaEstudiante")
-    public String altaEstudiante(@ModelAttribute Estudiante estudiante) {
+    public String altaEstudiante(@ModelAttribute Estudiante estudiante,
+            @RequestParam(name = "numerosTelefonos") String telefonosRecibidos) {
+        
+        LOG.info("Telefonos recibidos: " + telefonosRecibidos);
+
+        List<String> listadoNumerosTelefonos = null;
+
+        //Esto tambien se podria solucionar poniendo telefono como required        
+        if(telefonosRecibidos != null) {
+
+        //Todo esto tiene sentido solo si hay algun telefono metido, que si no nos saltaria
+        //error
+        String[] arrayTelefonos = telefonosRecibidos.split(";");
+
+        //Convertirmos el array en lista
+        listadoNumerosTelefonos = Arrays.asList(arrayTelefonos);
+
+        }
 
         //guardarlo en la base de datos
         estudianteService.save(estudiante);
+
+        //Aqui la variable declarada a nivel de metodo tenemos que asiganarle un valor, solo
+        //A nivel de clase se le asigna automaticamente
+        if(listadoNumerosTelefonos != null) {
+            listadoNumerosTelefonos.stream().forEach(numero -> {
+                Telefono telefonoObject = Telefono
+                .builder()
+                .numero(numero)
+                .estudiante(estudiante)
+                .build();
+
+            //Esto es para que se nos guarde en mysql sabes, todo relasionado        
+            telefonoService.save(telefonoObject);
+            });
+        }
 
         return "redirect:/listar"; 
     }
