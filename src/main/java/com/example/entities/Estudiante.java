@@ -7,6 +7,9 @@ package com.example.entities;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -45,8 +48,13 @@ public class Estudiante implements Serializable {
     private String nombre;
     private String primerApellido;
     private String segundoApellido;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaAlta;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaNacimiento;
+
     private Genero genero; 
     private double beca; 
 
@@ -57,13 +65,19 @@ public class Estudiante implements Serializable {
     //Un estudiante tiene una facultad asiq creamos una propiedad facultad
     //ahora para relacionar facultad con estudiante:
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST) 
+    //Cambiamos a LAZY porque las conexiones se establecen cuando se hace una consulta,
+    //persist haria que estuviesemos consumiendo recursos constantemente 
+    //y complica la manipulacion entre las relaciones
+    //LAZY SIEMPRE MEJOR 
+
+    //La foreign key solo se pone en el lado de MUCHOS. 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST) 
     //Vamos a indicar la columna que va a tener la relacion de clave externa. Esto es lo q lo crea.
     @JoinColumn(name = "idFacultad")
     private Facultad facultad; 
 
     //como un estudiante puede tener varios telefonos creamos una lista 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, mappedBy = "estudiante")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "estudiante")
     private List<Telefono> telefonos; 
     
     public enum Genero {
