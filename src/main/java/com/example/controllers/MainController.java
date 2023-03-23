@@ -166,4 +166,29 @@ public class MainController {
 
         return "redirect:/listar"; 
     }
+
+    /**
+     * MUESTRA LOS DETALLES
+     */
+    @GetMapping("/detalles/{id}")
+    public String estudianteDetails(@PathVariable(name = "id") int id, Model model) {
+
+        //necesito pedirle al servicio de estudiantes el estudiante que pertenece a ese id
+        //para eso necesito el estudiante, nombre y apellido y los telefonos
+        Estudiante estudiante = estudianteService.findById(id);
+        //Aqui tengo los objetos telefonos, yo solo voy a necesitar los numeros
+        List<Telefono> telefonos = telefonoService.findByEstudiante(estudiante);
+       
+        List<String> numerosTelefono = telefonos.stream()
+        .map(t -> t.getNumero())
+        //normalmente seria: .collect(Collectors.toList()); pq toList ahora es operacion
+        //terminal tambien.
+        .toList();
+
+        //Esto sirve para preparar la informacion para que através del motor de plantillas
+        //se renderice todo en la vista
+        model.addAttribute("telefonos", numerosTelefono);
+        model.addAttribute("estudiante", estudiante);
+        return "views/detallesEstudiante";
+    }
 }

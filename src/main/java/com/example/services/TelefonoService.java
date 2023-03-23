@@ -13,4 +13,7 @@ public interface TelefonoService {
     public void deleteById(int idTelefono);
 
     public void deleteByEstudiante(Estudiante estudiante); 
+
+    //Para detalles, es lo mismo que lo que tenemos en TelefonoDAO
+    public List<Telefono> findByEstudiante(Estudiante estudiante);
 }

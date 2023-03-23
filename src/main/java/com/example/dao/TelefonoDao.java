@@ -1,5 +1,7 @@
 package com.example.dao;
 
+import java.util.List;
+
 // import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,9 +26,11 @@ public interface TelefonoDao extends JpaRepository<Telefono, Integer> {
     long deleteByEstudiante(Estudiante estudiante); 
 
     //Esto ha salido de autocompletar findByEstudiante    
-    // List<Telefono> findByEstudiante(Estudiante estudiante);
+    //Para detalles creamos un metodo que busque por estudiante y nos devuelva
+    //una lista de sus telefonos
+    List<Telefono> findByEstudiante(Estudiante estudiante);
     
     //No estaba inicialmente, porque teníamos el CRUD repository. 
-    //Si quieres usar tus propias consultas,//genera la implementación de ese método.
-    //se usa long para saber la cantidad de registros que ha borrado.
+    //Si quieres usar tus propias consultas, genera la implementación 
+    //de ese método se usa long para saber la cantidad de registros que ha borrado.
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.dao.EstudianteDao;
 import com.example.dao.TelefonoDao;
 import com.example.entities.Estudiante;
 import com.example.entities.Telefono;
@@ -46,6 +47,11 @@ public class TelefonoServiceImpl implements TelefonoService{
     @Transactional
     public void deleteByEstudiante(Estudiante estudiante) {
        telefonoDao.deleteByEstudiante(estudiante);
+    }
+
+    @Override
+    public List<Telefono> findByEstudiante(Estudiante estudiante) {
+       return telefonoDao.findByEstudiante(estudiante);
     }
     
 }
