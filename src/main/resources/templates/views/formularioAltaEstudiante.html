@@ -12,7 +12,7 @@
     <form th:object="${estudiante}" th:action="@{/altaModificacionEstudiante}" method="post">
 
         <!-- Guardar en un input oculto el id del estudiante -->
-        <input type="hidden" name="id" th:value="${estudiante.id}"
+        <input type="hidden" name="id" th:value="${estudiante.id}">
 
 
         <label for="nombre">Nombre: </label>
